@@ -18,13 +18,23 @@ public class User {
     private Role role;
     private String email;
     private String password;
+    private Boolean active;
 
-    public User(String surname, String firstName, Role role, String email, String password) {
+    public User(String surname, String firstName, Role role, String email, String password,Boolean active) {
         this.surname = surname;
         this.firstName = firstName;
         this.role = role;
         this.email = email;
         this.password = password;
+        this.active = true;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Role getRole() {

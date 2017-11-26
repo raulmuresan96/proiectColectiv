@@ -66,6 +66,7 @@ public class ReportRestController {
         }
     }
 
+
     @RequestMapping("/API/user/day/start")
     public void startDay(@RequestBody UserLocation userLocation){
 
@@ -73,12 +74,17 @@ public class ReportRestController {
         reportRepository.save(report);
     }
 
-    @RequestMapping("/API/user/day/finish")
+    @RequestMapping(value = "/API/user/day/finish", method = RequestMethod.POST)
     public void finishDay(@RequestBody User user){
         Report report = findByUserAndStartDate(user, new Date());
         Date date = new Date();
         report.setEndDate(date);
         report.setHours( 1.0 * (date.getTime() -report.getStartDate().getTime()) / 1000 / 3600);
+        reportRepository.save(report);
+    }
+
+    @RequestMapping(value = "/API/report", method = RequestMethod.POST)
+    public void updateReport(@RequestBody Report report){
         reportRepository.save(report);
     }
 

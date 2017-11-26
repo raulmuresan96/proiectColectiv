@@ -35,6 +35,12 @@ public class Report {
         this.location = location;
     }
 
+    public Report(User user, Date startDate, Location location){
+        this.user = user;
+        this.startDate = startDate;
+        this.location = location;
+    }
+
     public int getRaportId() {
         return raportId;
     }

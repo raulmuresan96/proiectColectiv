@@ -1,10 +1,7 @@
 package controller;
 
 import com.sun.javafx.css.converters.PaintConverter;
-import model.Location;
-import model.Report;
-import model.Role;
-import model.User;
+import model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +11,11 @@ import repo.LocationRepository;
 import repo.ReportRepository;
 import repo.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  * Created by Ciprian on 11/25/2017.
@@ -23,11 +23,11 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class ReportRestController {
     @Autowired
-    ReportRepository reportRepository;
+    private ReportRepository reportRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
 
     @RequestMapping(value = "/API/user/day", method = RequestMethod.POST)
@@ -37,40 +37,9 @@ public class ReportRestController {
         return findByUserAndStartDate(user, date) != null;
     }
 
-    static class UserLocation{
-        User user;
-        Location location;
-        public UserLocation(){
-
-        }
-
-        public User getUser() {
-            return user;
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-        }
-
-        public Location getLocation() {
-            return location;
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        public UserLocation(User user, Location location){
-            this.location = location;
-            this.user = user;
-        }
-    }
-
-
     @RequestMapping("/API/user/day/start")
-    public void startDay(@RequestBody UserLocation userLocation){
-
-        Report report = new Report(userLocation.user, new Date(), userLocation.location);
+    public void startDay(@RequestBody Report report){
+        report.setStartDate(new Date());
         reportRepository.save(report);
     }
 
@@ -88,6 +57,21 @@ public class ReportRestController {
         reportRepository.save(report);
     }
 
+    @RequestMapping(value = "/API/report/statistic", method = RequestMethod.POST)
+    public List<Report> generateStatistics(@RequestBody ReportsStatistics reportsStatistics){
+        List<Report> reports = new ArrayList<>();
+        //checks if a Report is in the requested interval
+        Predicate<Report> predicate = (entity) -> (entity.getStartDate().compareTo(reportsStatistics.getStartDate()) > 0) &&
+                (entity.getEndDate().compareTo(reportsStatistics.getEndDate()) < 0);
+        reportRepository.findAllByUserUserId(reportsStatistics.getIdUser()).forEach(key ->{
+            if(predicate.test(key)){
+                reports.add(key);
+            }
+        });
+        return reports;
+    }
+
+    //TODO: Probably this method should exist in a Service
     private Report findByUserAndStartDate(User user, Date date){
         for(Report report: reportRepository.findAllByUserUserId(user.getUserId())){
             if(report.getStartDate().getDay() == date.getDay() &&

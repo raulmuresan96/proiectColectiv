@@ -1,43 +1,39 @@
 package controller;
 
-import model.Role;
 import model.User;
 import org.springframework.web.bind.annotation.*;
-import repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import service.UserService;
 
 /**
  * Created by Raul on 23/11/2017.
  */
 
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequestMapping("/API/user")
-public class UserRestController {
+public class UserController {
+
     @Autowired
-    private UserRepository userRepository;
+    private UserService service;
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<User> getUsers(){
-        return userRepository.findAll();
+        return service.getUsers();
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public void addUser(@RequestBody User user){
-        userRepository.save(user);
+        service.addUser(user);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void deleteUser(@PathVariable("id") Integer id){
-        User userToDisable = userRepository.findOne(id);
-        userToDisable.setActive(false);
-        userRepository.save(userToDisable);
+        service.deleteUser(id);
     }
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public User verifyUser(@RequestBody User user){
-        return userRepository.findByEmailAndPasswordAndActive(user.getEmail(),user.getPassword(),true);
+        return service.verifyUser(user);
     }
-
-
 
 }

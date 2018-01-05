@@ -4,6 +4,7 @@ import model.Report;
 import model.ReportsStatistics;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import repo.LocationRepository;
 import repo.ReportRepository;
 import repo.UserRepository;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
+@Service
 public class ReportService {
 
     @Autowired

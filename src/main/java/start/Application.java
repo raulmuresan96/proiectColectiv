@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages={"repo"})
 @EntityScan(basePackages={"model"})
 @SpringBootApplication
-@ComponentScan(basePackages={"controller"})
+@ComponentScan(basePackages={"controller","service"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

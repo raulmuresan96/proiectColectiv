@@ -1,28 +1,19 @@
-package controller;
+package service;
 
 import model.Location;
 import model.Report;
 import model.Role;
 import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 import repo.LocationRepository;
 import repo.ReportRepository;
 import repo.UserRepository;
 
 import java.util.Date;
 
-/**
- * Created by Raul on 25/11/2017.
- */
-
-
-@RestController
-@RequestMapping("/API/init")
-public class InitRestController {
+@Service
+public class InitService {
 
     @Autowired
     private LocationRepository locationRepository;
@@ -31,8 +22,7 @@ public class InitRestController {
     @Autowired
     private ReportRepository reportRepository;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public void getAllLocations(){
+    public void init() {
         userRepository.save(new User("Muresan", "Raul", Role.EMPLOYEE, "raul@gmail.com", "abc", true));
         userRepository.save(new User("Muresan", "Alexandra", Role.EMPLOYEE, "ale@gmail.com", "abc", true));
         userRepository.save(new User("Pavel", "Cosmin", Role.EMPLOYEE, "cosmin@gmail.com", "abc", true));
@@ -46,9 +36,8 @@ public class InitRestController {
         reportRepository.save(new Report(userRepository.findOne(1), new Date(), new Date(), 0.1, locationRepository.findOne(1)));
         reportRepository.save(new Report(userRepository.findOne(2), new Date(), new Date(), 0.1, locationRepository.findOne(1)));
         reportRepository.save(new Report(userRepository.findOne(3), new Date(), new Date(), 0.1, locationRepository.findOne(2)));
-
-
     }
+
 
 
 }

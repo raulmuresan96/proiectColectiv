@@ -7,26 +7,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import repo.LocationRepository;
+import service.LocationService;
 
 /**
  * Created by Iulian on 11/25/2017.
  */
 
-
 @RestController
 @RequestMapping("/API/locations")
-public class LocationRestController {
+public class LocationController {
 
     @Autowired
-    LocationRepository locationRepository;
+    private LocationService service;
 
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<Location> getAllLocations(){
-        return locationRepository.findAll();
+        return service.getAllLocations();
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public void addLocation(@RequestBody Location location){
-        locationRepository.save(location);
+        service.addLocation(location);
     }
+
 }

@@ -27,7 +27,7 @@ public class ReportController {
         return service.checkIfDayStarted(user);
     }
 
-    @RequestMapping("/API/user/day/start")
+    @RequestMapping(value = "/API/user/day/start",  method = RequestMethod.POST)
     public void startDay(@RequestBody Report report){
         service.startDay(report);
     }

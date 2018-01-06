@@ -2,10 +2,7 @@ package controller;
 
 import model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import service.ReportService;
 
 import java.util.ArrayList;
@@ -27,6 +24,11 @@ public class ReportController {
         return service.checkIfDayStarted(user);
     }
 
+    @RequestMapping(value = "/API/user/day/isFinished", method = RequestMethod.POST)
+    public boolean checkIfDayFinished(@RequestBody User user){
+        return service.checkIfDayFinished(user);
+    }
+
     @RequestMapping(value = "/API/user/day/start",  method = RequestMethod.POST)
     public void startDay(@RequestBody Report report){
         service.startDay(report);
@@ -40,6 +42,13 @@ public class ReportController {
     @RequestMapping(value = "/API/report", method = RequestMethod.POST)
     public void updateReport(@RequestBody Report report){
         service.updateReport(report);
+    }
+
+    //@PathVariable(value="someID") String id,
+
+    @RequestMapping(value = "/API/report/{idUser}", method = RequestMethod.GET)
+    public Iterable<Report> getAllReportsByUser(@PathVariable(value="idUser") int idUser){
+        return service.findAllByUserId(idUser);
     }
 
     @RequestMapping(value = "/API/report/statistic", method = RequestMethod.POST)

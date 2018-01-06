@@ -30,6 +30,11 @@ public class ReportService {
         return findByUserAndStartDate(user, date) != null;
     }
 
+    public boolean checkIfDayFinished(User user){
+        Date date = new Date();
+        return findByUserAndEndDate(user, date) != null;
+    }
+
     public void startDay(Report report){
         report.setStartDate(new Date());
         reportRepository.save(report);
@@ -66,6 +71,12 @@ public class ReportService {
         return reports;
     }
 
+    public Iterable<Report> findAllByUserId(int userId){
+        return reportRepository.findAllByUserUserId(userId);
+    }
+
+
+
     private Report findByUserAndStartDate(User user, Date date){
         for(Report report: reportRepository.findAllByUserUserId(user.getUserId())){
             if (compareReportDateAndDate(report.getStartDate(), date)) {
@@ -74,6 +85,16 @@ public class ReportService {
         }
         return null;
     }
+
+    private Report findByUserAndEndDate(User user, Date date){
+        for(Report report: reportRepository.findAllByUserUserId(user.getUserId())){
+            if (report.getEndDate() != null && compareReportDateAndDate(report.getEndDate(), date)) {
+                return report;
+            }
+        }
+        return null;
+    }
+
 
     private boolean compareReportDateAndDate(Date report, Date date) {
         Calendar reportCalendar = toCalendar(report);

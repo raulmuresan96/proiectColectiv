@@ -20,7 +20,7 @@ public class ReportController {
     private ReportService service;
 
     @RequestMapping(value = "/API/user/day", method = RequestMethod.POST)
-    public boolean checkIfDayStarted(@RequestBody User user){
+    public Report checkIfDayStarted(@RequestBody User user){
         return service.checkIfDayStarted(user);
     }
 

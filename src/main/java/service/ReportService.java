@@ -25,9 +25,9 @@ public class ReportService {
     @Autowired
     private LocationRepository locationRepository;
 
-    public boolean checkIfDayStarted(User user){
+    public Report checkIfDayStarted(User user){
         Date date = new Date();
-        return findByUserAndStartDate(user, date) != null;
+        return findByUserAndStartDate(user, date);
     }
 
     public boolean checkIfDayFinished(User user){

@@ -33,7 +33,12 @@ public class UserController {
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public User verifyUser(@RequestBody User user){
-        return service.verifyUser(user);
+        User toReturnUser = service.verifyUser(user);
+        if(toReturnUser == null){
+            toReturnUser = new User();
+            toReturnUser.setUserId(-1);
+        }
+        return toReturnUser;
     }
 
 }

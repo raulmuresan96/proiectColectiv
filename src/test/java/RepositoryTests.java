@@ -3,9 +3,11 @@ package repo;
 import model.Role;
 import model.User;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import start.Application;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -30,10 +31,17 @@ public class RepositoryTests {
     @Autowired LocationRepository locationRepository;
     @Autowired ReportRepository reportRepository;
 
+    private User[] users;
+
     @Before
-    public void setUp(){
-        entityManager.persist(new User("surname", "lastname", Role.EMPLOYEE, "surname@example.com", "password", true));
-        entityManager.persist(new User("surname2", "lastname2", Role.ADMIN, "surname2@example.com", "password", false));
+    public void setUpUsers(){
+        users = new User[3];
+        users[0] = new User("surname1", "lastname1", Role.EMPLOYEE, "email1", "pass1", true);
+        users[1] = new User("surname2", "lastname2", Role.ADMIN, "email2", "pass2", false);
+        users[2] = new User("surname3", "firstname3", Role.EMPLOYEE, "email3", "pass3", true);
+
+        entityManager.persist(users[0]);
+        entityManager.persist(users[1]);
     }
 
 //    repo tests todo:
@@ -49,7 +57,28 @@ public class RepositoryTests {
 
     @Test
     public void findUserByEmailAndPasswordActive() {
-        assertNotNull(userRepository.findByEmailAndPasswordAndActive("surname@example.com", "password", true));
+        assertNotNull(userRepository.findByEmailAndPasswordAndActive("email1", "pass1", true));
         assertNull(userRepository.findByEmailAndPasswordAndActive("blabla", "bla", true));
+    }
+
+    @Test
+    public void countUsers() {
+        assertEquals(userRepository.count(), 2);
+    }
+
+    @Test
+    public void crudScenarioUsers() {
+        User newUser = users[2];
+
+        User addedUser = userRepository.save(newUser);
+        assertEquals(addedUser, newUser);
+
+        User foundUser = userRepository.findOne(addedUser.getUserId());
+        assertEquals(foundUser, newUser);
+
+        assertThat(userRepository.findAll(), Matchers.contains(users[0], users[1], users[2]));
+
+        userRepository.delete(addedUser.getUserId());
+        assertNull(userRepository.findOne(addedUser.getUserId()));
     }
 }

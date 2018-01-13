@@ -44,8 +44,6 @@ public class ReportController {
         service.updateReport(report);
     }
 
-    //@PathVariable(value="someID") String id,
-
     @RequestMapping(value = "/API/report/{idUser}", method = RequestMethod.GET)
     public Iterable<Report> getAllReportsByUser(@PathVariable(value="idUser") int idUser){
         return service.findAllByUserId(idUser);
@@ -55,5 +53,4 @@ public class ReportController {
     public List<Report> generateStatistics(@RequestBody ReportsStatistics reportsStatistics){
         return service.generateStatistics(reportsStatistics);
     }
-
 }

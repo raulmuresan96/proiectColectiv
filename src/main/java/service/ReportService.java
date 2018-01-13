@@ -83,7 +83,7 @@ public class ReportService {
                 return report;
             }
         }
-        return null;
+        return new Report(-1);
     }
 
     private Report findByUserAndEndDate(User user, Date date){

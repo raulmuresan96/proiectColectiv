@@ -27,6 +27,10 @@ public class Report {
     public Report() {
     }
 
+    public Report(int raportId) {
+        this.raportId = raportId;
+    }
+
     public Report(User user, Date startDate, Date endDate, double hours, Location location) {
         this.user = user;
         this.startDate = startDate;

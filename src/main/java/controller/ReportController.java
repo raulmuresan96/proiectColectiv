@@ -35,8 +35,8 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/API/user/day/finish", method = RequestMethod.POST)
-    public void finishDay(@RequestBody User user){
-        service.finishDay(user);
+    public Report finishDay(@RequestBody User user){
+        return service.finishDay(user);
     }
 
     @RequestMapping(value = "/API/report", method = RequestMethod.POST)

@@ -40,14 +40,14 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public void finishDay(User user){
+    public Report finishDay(User user){
         Date date = new Date();
         Report report = findByUserAndStartDate(user, date);
 
         if (report != null) {
             report.setEndDate(date);
             report.setHours( 1.0 * (date.getTime() -report.getStartDate().getTime()) / 1000 / 3600);
-            reportRepository.save(report);
+            return reportRepository.save(report);
         } else {
             //TODO: Remove this exception and add proper exceptions
             throw new RuntimeException("Report not found");
@@ -100,7 +100,7 @@ public class ReportService {
         Calendar reportCalendar = toCalendar(report);
         Calendar dateCalendar = toCalendar(date);
 
-        return reportCalendar.get(Calendar.DAY_OF_WEEK) == dateCalendar.get(Calendar.DAY_OF_WEEK)
+        return reportCalendar.get(Calendar.DAY_OF_MONTH) == dateCalendar.get(Calendar.DAY_OF_MONTH)
                 && reportCalendar.get(Calendar.MONTH) == dateCalendar.get(Calendar.MONTH)
                 && reportCalendar.get(Calendar.YEAR) == dateCalendar.get(Calendar.YEAR);
     }

@@ -12,7 +12,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public Iterable<User> getUsers(){
-        return userRepository.findAll();
+        return userRepository.findByActive(true);
     }
 
     public void addUser(User user){

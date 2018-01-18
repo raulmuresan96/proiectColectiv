@@ -15,15 +15,15 @@ public class UserService {
         return userRepository.findByActive(true);
     }
 
-    public void addUser(User user){
+    public User addUser(User user){
         user.setActive(true);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
-    public void deleteUser(Integer id){
+    public User deleteUser(Integer id){
         User userToDisable = userRepository.findOne(id);
         userToDisable.setActive(false);
-        userRepository.save(userToDisable);
+        return userRepository.save(userToDisable);
     }
 
     public User verifyUser(User user){

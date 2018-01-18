@@ -1,5 +1,4 @@
 package service;
-
 import model.Report;
 import model.ReportsStatistics;
 import model.User;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 import repo.LocationRepository;
 import repo.ReportRepository;
 import repo.UserRepository;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,21 +28,21 @@ public class ReportService {
         return findByUserAndStartDate(user, date);
     }
 
-    public boolean checkIfDayFinished(User user){
+    public Report checkIfDayFinished(User user){
         Date date = new Date();
-        return findByUserAndEndDate(user, date) != null;
+        return findByUserAndEndDate(user, date);
     }
 
-    public void startDay(Report report){
+    public Report startDay(Report report){
         report.setStartDate(new Date());
-        reportRepository.save(report);
+        return reportRepository.save(report);
     }
 
     public Report finishDay(User user){
         Date date = new Date();
         Report report = findByUserAndStartDate(user, date);
 
-        if (report != null) {
+        if (report != null && report.getRaportId() != -1) {
             report.setEndDate(date);
             report.setHours( 1.0 * (date.getTime() -report.getStartDate().getTime()) / 1000 / 3600);
             return reportRepository.save(report);
@@ -54,8 +52,8 @@ public class ReportService {
         }
     }
 
-    public void updateReport(Report report){
-        reportRepository.save(report);
+    public Report updateReport(Report report){
+        return reportRepository.save(report);
     }
 
     public List<Report> generateStatistics(ReportsStatistics reportsStatistics){
@@ -92,7 +90,7 @@ public class ReportService {
                 return report;
             }
         }
-        return null;
+        return new Report(-1);
     }
 
 

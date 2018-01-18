@@ -26,8 +26,8 @@ public class LocationController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void addLocation(@RequestBody Location location){
-        service.addLocation(location);
+    public Location addLocation(@RequestBody Location location){
+        return service.addLocation(location);
     }
 
 }

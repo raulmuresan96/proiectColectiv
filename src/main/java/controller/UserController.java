@@ -22,13 +22,13 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void addUser(@RequestBody User user){
-        service.addUser(user);
+    public User addUser(@RequestBody User user){
+        return service.addUser(user);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteUser(@PathVariable("id") Integer id){
-        service.deleteUser(id);
+    public User deleteUser(@PathVariable("id") Integer id){
+        return service.deleteUser(id);
     }
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
@@ -40,5 +40,4 @@ public class UserController {
         }
         return toReturnUser;
     }
-
 }

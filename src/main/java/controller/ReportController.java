@@ -25,13 +25,13 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/API/user/day/isFinished", method = RequestMethod.POST)
-    public boolean checkIfDayFinished(@RequestBody User user){
+    public Report checkIfDayFinished(@RequestBody User user){
         return service.checkIfDayFinished(user);
     }
 
     @RequestMapping(value = "/API/user/day/start",  method = RequestMethod.POST)
-    public void startDay(@RequestBody Report report){
-        service.startDay(report);
+    public Report startDay(@RequestBody Report report){
+        return service.startDay(report);
     }
 
     @RequestMapping(value = "/API/user/day/finish", method = RequestMethod.POST)
@@ -40,8 +40,8 @@ public class ReportController {
     }
 
     @RequestMapping(value = "/API/report", method = RequestMethod.POST)
-    public void updateReport(@RequestBody Report report){
-        service.updateReport(report);
+    public Report updateReport(@RequestBody Report report){
+        return service.updateReport(report);
     }
 
     @RequestMapping(value = "/API/report/{idUser}", method = RequestMethod.GET)

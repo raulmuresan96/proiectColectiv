@@ -36,8 +36,8 @@ public class RepositoryTests {
     @Before
     public void setUpUsers(){
         users = new User[3];
-        users[0] = new User("surname1", "lastname1", Role.EMPLOYEE, "email1", "pass1", true);
-        users[1] = new User("surname2", "lastname2", Role.ADMIN, "email2", "pass2", false);
+        users[0] = new User("surname1", "firstname1", Role.EMPLOYEE, "email1", "pass1", true);
+        users[1] = new User("surname2", "firstname2", Role.ADMIN, "email2", "pass2", false);
         users[2] = new User("surname3", "firstname3", Role.EMPLOYEE, "email3", "pass3", true);
 
         entityManager.persist(users[0]);
@@ -64,6 +64,17 @@ public class RepositoryTests {
     @Test
     public void countUsers() {
         assertEquals(userRepository.count(), 2);
+    }
+
+    @Test
+    public void findUserByActive() {
+        Iterable<User> activeUsers = userRepository.findByActive(true);
+        assertThat(activeUsers, Matchers.contains(users[0]));
+        assertThat(activeUsers, Matchers.not(Matchers.contains(users[1])));
+
+        Iterable<User> inactiveUsers = userRepository.findByActive(false);
+        assertThat(inactiveUsers, Matchers.contains(users[1]));
+        assertThat(inactiveUsers, Matchers.not(Matchers.contains(users[0])));
     }
 
     @Test

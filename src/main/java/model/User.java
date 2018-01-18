@@ -26,7 +26,7 @@ public class User {
         this.role = role;
         this.email = email;
         this.password = password;
-        this.active = true;
+        this.active = active;
     }
 
     public Boolean getActive() {

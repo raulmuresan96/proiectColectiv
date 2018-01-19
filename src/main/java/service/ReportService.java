@@ -30,22 +30,22 @@ public class ReportService {
 
 
     public Report checkIfDayStarted(User user){
-        Date date = new Date();
+        Date date = getDateNow();
         return findByUserAndStartDate(user, date);
     }
 
     public Report checkIfDayFinished(User user){
-        Date date = new Date();
+        Date date = getDateNow();
         return findByUserAndEndDate(user, date);
     }
 
     public Report startDay(Report report){
-        report.setStartDate(new Date());
+        report.setStartDate(getDateNow());
         return reportRepository.save(report);
     }
 
     public Report finishDay(User user){
-        Date date = new Date();
+        Date date = getDateNow();
         Report report = findByUserAndStartDate(user, date);
 
         if (report != null && report.getRaportId() != -1) {
@@ -88,7 +88,9 @@ public class ReportService {
         return reportRepository.findAllByUserUserId(userId);
     }
 
-
+    public Date getDateNow() {
+        return new Date();
+    }
 
     private Report findByUserAndStartDate(User user, Date date){
         for(Report report: reportRepository.findAllByUserUserId(user.getUserId())){

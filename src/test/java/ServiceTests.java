@@ -1,4 +1,5 @@
 import model.Location;
+import model.Report;
 import model.Role;
 import model.User;
 
@@ -7,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import repo.LocationRepository;
+import repo.ReportRepository;
 import repo.UserRepository;
 
 import org.junit.Before;
@@ -19,12 +21,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 import service.LocationService;
+import service.ReportService;
 import service.UserService;
 import start.Application;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.Assert.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 
 @RunWith(SpringRunner.class)
@@ -49,14 +56,23 @@ public class ServiceTests {
         }
     }
 
+    @TestConfiguration
+    static class ReportServiceTestContextConfiguration {
+        @Bean
+        public ReportService reportService() { return spy(ReportService.class); }
+    }
+
     @Autowired private UserService userService;
     @Autowired private LocationService locationService;
+    @Autowired private ReportService reportService;
 
     @MockBean private UserRepository userRepository;
     @MockBean private LocationRepository locationRepository;
+    @MockBean private ReportRepository reportRepository;
 
     private User[] users;
     private Location[] locations;
+    private Report[] reports;
 
     @Before
     public void setUp() {
@@ -99,6 +115,31 @@ public class ServiceTests {
 
         Mockito.when(locationRepository.findAll()).thenReturn(addedLocations);
         Mockito.when(locationRepository.save(locations[2])).thenReturn(locations[2]);
+
+        reports = new Report[3];
+        reports[0] = new Report(users[0], new Date(0 * 60 * 60 * 1000), new Date((0 + 6) * 60 * 60 * 1000), 6, locations[0]);
+        reports[1] = new Report(users[1], new Date(24 * 60 * 60 * 1000), new Date((24 + 6) * 60 * 60 * 1000), 6, locations[1]);
+        reports[2] = new Report(users[2], new Date(48 * 60 * 60 * 1000), new Date((48 + 6) * 60 * 60 * 1000), 6, locations[2]);
+
+        reports[0].setRaportId(0);
+        reports[1].setRaportId(1);
+        reports[2].setRaportId(2);
+
+        Mockito.when(reportRepository.findAllByRaportId(0)).thenReturn(reports[0]);
+        Mockito.when(reportRepository.findAllByRaportId(1)).thenReturn(reports[1]);
+        Mockito.when(reportRepository.findAllByRaportId(2)).thenReturn(reports[2]);
+
+        ArrayList<Report> reportsByUser0 = new ArrayList<>(1);
+        reportsByUser0.add(reports[0]);
+        Mockito.when(reportRepository.findAllByUserUserId(0)).thenReturn(reportsByUser0);
+
+        ArrayList<Report> reportsByUser1 = new ArrayList<>(1);
+        reportsByUser1.add(reports[1]);
+        Mockito.when(reportRepository.findAllByUserUserId(1)).thenReturn(reportsByUser1);
+
+        Mockito.when(reportRepository.save(reports[0])).then(returnsFirstArg());
+        Mockito.when(reportRepository.save(reports[1])).then(returnsFirstArg());
+        Mockito.when(reportRepository.save(reports[2])).then(returnsFirstArg());
     }
 
     @Test
@@ -149,5 +190,61 @@ public class ServiceTests {
         assertEquals(addedLocation, locations[2]);
     }
 
-    
+    @Test
+    public void findReportById() {
+        assertEquals(reportService.findByReportId(0), reports[0]);
+        Mockito.verify(reportRepository).findAllByRaportId(0);
+    }
+
+    @Test
+    public void checkIfDayStarted() {
+        doReturn(new Date(0)).when(reportService).getDateNow();
+        assertEquals(reportService.checkIfDayStarted(users[0]), reports[0]);
+
+        doReturn(new Date(24 * 60 * 60 * 1000)).when(reportService).getDateNow();
+        assertEquals(reportService.checkIfDayStarted(users[1]), reports[1]);
+
+        Mockito.verify(reportRepository).findAllByUserUserId(0);
+        Mockito.verify(reportRepository).findAllByUserUserId(1);
+        Mockito.verify(reportService, Mockito.times(2)).getDateNow();
+    }
+
+    @Test
+    public void checkIfDayFinished() {
+        doReturn(new Date(7 * 60 * 60 * 1000)).when(reportService).getDateNow();
+        assertEquals(reportService.checkIfDayFinished(users[0]), reports[0]);
+
+        doReturn(new Date((24 + 7) * 60 * 60 * 1000)).when(reportService).getDateNow();
+        assertEquals(reportService.checkIfDayFinished(users[1]), reports[1]);
+
+        Mockito.verify(reportRepository).findAllByUserUserId(0);
+        Mockito.verify(reportRepository).findAllByUserUserId(1);
+        Mockito.verify(reportService, Mockito.times(2)).getDateNow();
+    }
+
+    @Test
+    public void startDay() {
+        doReturn(new Date(0)).when(reportService).getDateNow();
+
+        assertEquals(reportService.startDay(reports[2]), reports[2]);
+        assertEquals(reports[2].getStartDate().getTime(), 0);
+
+        Mockito.verify(reportRepository).save(reports[2]);
+        Mockito.verify(reportService).getDateNow();
+    }
+
+//    @Test
+//    public void finishDay() {
+//        doReturn(new Date(0)).when(reportService).getDateNow();
+//
+//
+//    }
+
+    /* ReportService tests todo:
+        finishDay
+        updateReport
+        updateReportSwift
+        generateStatistics
+        findAllByUserId
+     */
 }

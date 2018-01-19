@@ -14,13 +14,13 @@ public class Report {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int raportId;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
     private Date startDate;
     private Date endDate;
     private double hours;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "locationId", referencedColumnName = "locationId")
     private Location location;
 

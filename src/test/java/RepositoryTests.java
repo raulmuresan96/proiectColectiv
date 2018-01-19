@@ -114,6 +114,36 @@ public class RepositoryTests {
     }
 
     @Test
+    public void updateUser() {
+        User userToUpdate = new User("surname4", "firstname4", Role.EMPLOYEE, "email4", "pass4", false);
+        userToUpdate.setUserId(users[0].getUserId());
+
+        long countBeforeUpdate = userRepository.count();
+        User updatedUser = userRepository.save(userToUpdate);
+        long countAfterUpdate = userRepository.count();
+
+        assertEquals(countBeforeUpdate, countAfterUpdate);
+
+        assertEquals(updatedUser.getUserId(), userToUpdate.getUserId());
+        assertEquals(updatedUser.getSurname(), userToUpdate.getSurname());
+        assertEquals(updatedUser.getFirstName(), userToUpdate.getFirstName());
+        assertEquals(updatedUser.getRole(), userToUpdate.getRole());
+        assertEquals(updatedUser.getEmail(), userToUpdate.getEmail());
+        assertEquals(updatedUser.getPassword(), userToUpdate.getPassword());
+        assertEquals(updatedUser.getActive(), userToUpdate.getActive());
+
+        User foundUpdatedUser = userRepository.findOne(users[0].getUserId());
+
+        assertEquals(foundUpdatedUser.getUserId(), userToUpdate.getUserId());
+        assertEquals(foundUpdatedUser.getSurname(), userToUpdate.getSurname());
+        assertEquals(foundUpdatedUser.getFirstName(), userToUpdate.getFirstName());
+        assertEquals(foundUpdatedUser.getRole(), userToUpdate.getRole());
+        assertEquals(foundUpdatedUser.getEmail(), userToUpdate.getEmail());
+        assertEquals(foundUpdatedUser.getPassword(), userToUpdate.getPassword());
+        assertEquals(foundUpdatedUser.getActive(), userToUpdate.getActive());
+    }
+
+    @Test
     public void countLocations() {
         assertEquals(locationRepository.count(), 2);
     }

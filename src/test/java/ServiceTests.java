@@ -1,3 +1,4 @@
+import model.Location;
 import model.Role;
 import model.User;
 
@@ -5,6 +6,7 @@ import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import repo.LocationRepository;
 import repo.UserRepository;
 
 import org.junit.Before;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
+import service.LocationService;
 import service.UserService;
 import start.Application;
 
@@ -38,11 +41,22 @@ public class ServiceTests {
         }
     }
 
+    @TestConfiguration
+    static class LocationServiceTestContextConfiguration {
+        @Bean
+        public LocationService locationService() {
+            return new LocationService();
+        }
+    }
+
     @Autowired private UserService userService;
+    @Autowired private LocationService locationService;
 
     @MockBean private UserRepository userRepository;
+    @MockBean private LocationRepository locationRepository;
 
     private User[] users;
+    private Location[] locations;
 
     @Before
     public void setUp() {
@@ -69,6 +83,22 @@ public class ServiceTests {
 
         Mockito.when(userRepository.findByEmailAndPasswordAndActive(users[0].getEmail(), users[0].getPassword(), true)).thenReturn(users[0]);
         Mockito.when(userRepository.findByEmailAndPasswordAndActive(users[2].getEmail(), users[2].getPassword(), true)).thenReturn(null);
+
+        locations = new Location[3];
+        locations[0] = new Location(0, 0, "location1");
+        locations[1] = new Location(1, 1, "location2");
+        locations[2] = new Location(2, 2, "location3");
+
+        locations[0].setLocationId(0);
+        locations[1].setLocationId(1);
+        locations[2].setLocationId(2);
+
+        ArrayList<Location> addedLocations = new ArrayList<>(2);
+        addedLocations.add(locations[0]);
+        addedLocations.add(locations[1]);
+
+        Mockito.when(locationRepository.findAll()).thenReturn(addedLocations);
+        Mockito.when(locationRepository.save(locations[2])).thenReturn(locations[2]);
     }
 
     @Test
@@ -104,5 +134,20 @@ public class ServiceTests {
         assertNull(userService.verifyUser(users[2]));
     }
 
+    @Test
+    public void getAllLocations() {
+        Iterable<Location> allLocations = locationService.getAllLocations();
 
+        assertThat(allLocations, Matchers.contains(locations[0], locations[1]));
+        assertThat(allLocations, Matchers.iterableWithSize(2));
+    }
+
+    @Test
+    public void addLocation() {
+        Location addedLocation = locationService.addLocation(locations[2]);
+
+        assertEquals(addedLocation, locations[2]);
+    }
+
+    
 }

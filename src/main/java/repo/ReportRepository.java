@@ -8,4 +8,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface ReportRepository extends CrudRepository<Report,Integer>  {
     Iterable<Report> findAllByUserUserId(int idUser);
     Iterable<Report> findByUser(int userId);
+    Report findAllByRaportId(int raportId);
 }

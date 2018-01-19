@@ -1,5 +1,6 @@
 package repo;
 
+import model.Report;
 import model.User;
 import org.springframework.data.repository.CrudRepository;
 

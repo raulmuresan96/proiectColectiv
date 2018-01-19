@@ -44,6 +44,14 @@ public class ReportController {
         return service.updateReport(report);
     }
 
+    @RequestMapping(value = "/API/report/update", method = RequestMethod.POST)
+    public Report updateReportSwift(@RequestBody Report report){
+        double workedHours = report.getHours();
+        report = service.findByReportId(report.getRaportId());
+        report.setHours(workedHours);
+        return service.updateReportSwift(report, workedHours);
+    }
+
     @RequestMapping(value = "/API/report/{idUser}", method = RequestMethod.GET)
     public Iterable<Report> getAllReportsByUser(@PathVariable(value="idUser") int idUser){
         return service.findAllByUserId(idUser);

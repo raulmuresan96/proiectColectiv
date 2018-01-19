@@ -23,6 +23,12 @@ public class ReportService {
     @Autowired
     private LocationRepository locationRepository;
 
+    public Report findByReportId(int reportId){
+        return reportRepository.findAllByRaportId(reportId);
+    }
+
+
+
     public Report checkIfDayStarted(User user){
         Date date = new Date();
         return findByUserAndStartDate(user, date);
@@ -53,8 +59,17 @@ public class ReportService {
     }
 
     public Report updateReport(Report report){
+        report.setHours( 1.0 * (report.getEndDate().getTime() -report.getStartDate().getTime()) / 1000 / 3600);
         return reportRepository.save(report);
     }
+
+    public Report updateReportSwift(Report report, double workedHours){
+        long workedHoursInMilliSeconds = (long) (workedHours * 3600 * 1000);
+        report.setEndDate(new Date(report.getStartDate().getTime() + workedHoursInMilliSeconds));
+        //report.setHours( 1.0 * (report.getEndDate().getTime() -report.getStartDate().getTime()) / 1000 / 3600);
+        return reportRepository.save(report);
+    }
+
 
     public List<Report> generateStatistics(ReportsStatistics reportsStatistics){
         List<Report> reports = new ArrayList<>();

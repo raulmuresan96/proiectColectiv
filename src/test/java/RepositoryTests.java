@@ -177,6 +177,9 @@ public class RepositoryTests {
 
     @Test
     public void crudScenarioReports() {
+        entityManager.persist(locations[2]);
+        entityManager.persist(users[2]);
+
         assertEquals(reportRepository.count(), 2);
 
         Report newReport = reports[2];
@@ -184,7 +187,7 @@ public class RepositoryTests {
         Report addedReport = reportRepository.save(newReport);
         assertEquals(addedReport, newReport);
 
-        assertEquals(locationRepository.count(), 3);
+        assertEquals(reportRepository.count(), 3);
 
         Report foundReport = reportRepository.findOne(addedReport.getRaportId());
         assertEquals(foundReport, newReport);
@@ -195,6 +198,9 @@ public class RepositoryTests {
         assertNull(reportRepository.findOne(addedReport.getRaportId()));
 
         assertEquals(reportRepository.count(), 2);
+
+        entityManager.remove(locations[2]);
+        entityManager.remove(users[2]);
     }
 
     @Test
